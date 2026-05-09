@@ -68,6 +68,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Spaces: allow empty Spaces (no last-node warning/auto-close), add pane context menu action to create an empty Space, and allow archiving a Space without saving its history. (#171)
 
 ### 🐞 Fixed
+- Desktop: upgrade Electron to 41.5.1 and queue website-window snapshot requests until the runtime is ready, preventing dropped captures during activation/loading transitions. (#2)
 - Terminal: make automatic display-consistency shared reference match manual capture under canvas zoom, and defer zoom-time DPR settle to reduce intermittent terminal content size twitching. (#218)
 - Workspace canvas: preserve trackpad canvas wheel ownership across idle hover gaps until explicit pointer retargeting, so terminals no longer steal the next two-finger canvas pan after a brief pause. (#219)
 - Agent: centralize local executable resolution with per-provider overrides so provider availability, model listing, hydrate/resume, and launch stay consistent across GUI-launched shell environments. (#210)
