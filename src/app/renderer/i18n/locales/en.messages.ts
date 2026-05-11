@@ -48,4 +48,11 @@ export const enMessages = {
   canvasImageUnsupportedType: 'Unsupported image type. Use PNG, JPEG, WebP, GIF, or AVIF.',
   canvasImageTooLarge: 'Image is too large (max {{maxMb}} MB).',
   canvasImageImportFailed: 'Failed to import image: {{message}}',
+  roleWorkflowRoleOnly: 'Connect a role output to another role input.',
+  roleWorkflowSelfLink: 'A role cannot connect to itself.',
+  roleWorkflowDuplicate: 'These roles are already connected.',
+  roleWorkflowSingleInput: 'This role already has an input link.',
+  roleWorkflowCycle: 'Role workflow links cannot form a cycle.',
+  roleWorkflowOutputReadFailed: 'Failed to read role output: {{message}}',
+  roleWorkflowOutputEmpty: 'Role output is empty, so the workflow stopped.',
 } as const

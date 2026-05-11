@@ -89,6 +89,13 @@ export interface RoleRunRecord {
   provider: AgentProvider | null
   agentNodeId: string | null
   sessionId: string | null
+  status: 'running' | 'completed' | 'failed'
+  output: string | null
+  outputCapturedAt: string | null
+  completedAt: string | null
+  workflowRunId: string | null
+  triggeredByRunId: string | null
+  downstreamTriggeredAt: string | null
   createdAt: string
 }
 
@@ -105,6 +112,15 @@ export interface RoleNodeData {
   runHistory: RoleRunRecord[]
   createdAt: string | null
   updatedAt: string | null
+}
+
+export interface RoleWorkflowLink {
+  id: string
+  sourceRoleNodeId: string
+  targetRoleNodeId: string
+  mode: 'auto'
+  createdAt: string
+  updatedAt: string
 }
 
 export interface ImageNodeData {
@@ -169,6 +185,7 @@ export interface WorkspaceState {
   isMinimapVisible: boolean
   spaces: WorkspaceSpaceState[]
   activeSpaceId: string | null
+  roleWorkflowLinks?: RoleWorkflowLink[]
   spaceArchiveRecords: SpaceArchiveRecord[]
 }
 
@@ -184,6 +201,7 @@ export interface PersistedWorkspaceState {
   isMinimapVisible: boolean
   spaces: WorkspaceSpaceState[]
   activeSpaceId: string | null
+  roleWorkflowLinks?: RoleWorkflowLink[]
   spaceArchiveRecords: SpaceArchiveRecord[]
 }
 

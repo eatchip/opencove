@@ -8,6 +8,10 @@ import type { NodeFrame, Point, RoleNodeData } from '../types'
 import { NodeResizeHandles } from './shared/NodeResizeHandles'
 import { useNodeFrameResize } from '../utils/nodeFrameResize'
 import { resolveCanonicalNodeMinSize } from '../utils/workspaceNodeSizing'
+import {
+  ROLE_WORKFLOW_INPUT_HANDLE_ID,
+  ROLE_WORKFLOW_OUTPUT_HANDLE_ID,
+} from '../utils/roleWorkflow'
 import { shouldStopWheelPropagation } from './taskNode/helpers'
 
 interface RoleNodeInteractionOptions {
@@ -127,8 +131,18 @@ export function RoleNode({
         }
       }}
     >
-      <Handle type="target" position={Position.Left} className="workspace-node-handle" />
-      <Handle type="source" position={Position.Right} className="workspace-node-handle" />
+      <Handle
+        id={ROLE_WORKFLOW_INPUT_HANDLE_ID}
+        type="target"
+        position={Position.Left}
+        className="workspace-node-handle role-node__connection role-node__connection--input"
+      />
+      <Handle
+        id={ROLE_WORKFLOW_OUTPUT_HANDLE_ID}
+        type="source"
+        position={Position.Right}
+        className="workspace-node-handle role-node__connection role-node__connection--output"
+      />
       <div className="role-node__header" data-node-drag-handle="true">
         <Bot className="role-node__icon" aria-hidden="true" />
         <div className="role-node__title-stack">

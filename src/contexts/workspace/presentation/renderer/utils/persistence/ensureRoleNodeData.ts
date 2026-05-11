@@ -18,6 +18,11 @@ function ensurePersistedRoleRunRecords(value: unknown): RoleRunRecord[] {
     const prompt = typeof record.prompt === 'string' ? record.prompt : ''
     const outputFormat = typeof record.outputFormat === 'string' ? record.outputFormat : ''
     const createdAt = normalizeOptionalString(record.createdAt)
+    const rawStatus = normalizeOptionalString(record.status)
+    const status: RoleRunRecord['status'] =
+      rawStatus === 'running' || rawStatus === 'completed' || rawStatus === 'failed'
+        ? rawStatus
+        : 'completed'
 
     if (!id || !createdAt) {
       continue
@@ -31,6 +36,13 @@ function ensurePersistedRoleRunRecords(value: unknown): RoleRunRecord[] {
       provider: normalizeProvider(record.provider),
       agentNodeId: normalizeOptionalString(record.agentNodeId),
       sessionId: normalizeOptionalString(record.sessionId),
+      status,
+      output: typeof record.output === 'string' ? record.output : null,
+      outputCapturedAt: normalizeOptionalString(record.outputCapturedAt),
+      completedAt: normalizeOptionalString(record.completedAt),
+      workflowRunId: normalizeOptionalString(record.workflowRunId),
+      triggeredByRunId: normalizeOptionalString(record.triggeredByRunId),
+      downstreamTriggeredAt: normalizeOptionalString(record.downstreamTriggeredAt),
       createdAt,
     })
 

@@ -6,6 +6,7 @@ import type {
 } from '@contexts/workspace/presentation/renderer/types'
 import { sanitizeWorkspaceSpaces } from '@contexts/workspace/presentation/renderer/utils/workspaceSpaces'
 import { appendSpaceArchiveRecord } from '@contexts/workspace/presentation/renderer/utils/spaceArchiveRecords'
+import { pruneRoleWorkflowLinksForNodes } from '@contexts/workspace/presentation/renderer/utils/roleWorkflow'
 import { useAppStore } from '../store/useAppStore'
 
 export function useWorkspaceStateHandlers({
@@ -14,6 +15,9 @@ export function useWorkspaceStateHandlers({
   requestPersistFlush: () => void
 }): {
   handleWorkspaceNodesChange: (nodes: WorkspaceState['nodes']) => void
+  handleWorkspaceRoleWorkflowLinksChange: (
+    links: NonNullable<WorkspaceState['roleWorkflowLinks']>,
+  ) => void
   handleWorkspaceViewportChange: (viewport: WorkspaceViewport) => void
   handleWorkspaceMinimapVisibilityChange: (isVisible: boolean) => void
   handleWorkspaceSpacesChange: (spaces: WorkspaceState['spaces']) => void
@@ -55,10 +59,42 @@ export function useWorkspaceStateHandlers({
           nodes,
           spaces: nextSpaces,
           activeSpaceId: hasActiveSpace ? workspace.activeSpaceId : null,
+          roleWorkflowLinks: pruneRoleWorkflowLinksForNodes({
+            links: workspace.roleWorkflowLinks ?? [],
+            nodes,
+          }),
         }
       }),
     )
   }, [])
+
+  const handleWorkspaceRoleWorkflowLinksChange = useCallback(
+    (links: NonNullable<WorkspaceState['roleWorkflowLinks']>): void => {
+      const { activeWorkspaceId: currentActiveWorkspaceId, setWorkspaces: updateWorkspaces } =
+        useAppStore.getState()
+      if (!currentActiveWorkspaceId) {
+        return
+      }
+
+      updateWorkspaces(previous =>
+        previous.map(workspace => {
+          if (workspace.id !== currentActiveWorkspaceId) {
+            return workspace
+          }
+
+          return {
+            ...workspace,
+            roleWorkflowLinks: pruneRoleWorkflowLinksForNodes({
+              links,
+              nodes: workspace.nodes,
+            }),
+          }
+        }),
+      )
+      requestPersistFlush()
+    },
+    [requestPersistFlush],
+  )
 
   const handleWorkspaceViewportChange = useCallback((viewport: WorkspaceViewport): void => {
     const { activeWorkspaceId: currentActiveWorkspaceId, setWorkspaces: updateWorkspaces } =
@@ -274,6 +310,7 @@ export function useWorkspaceStateHandlers({
 
   return {
     handleWorkspaceNodesChange,
+    handleWorkspaceRoleWorkflowLinksChange,
     handleWorkspaceViewportChange,
     handleWorkspaceMinimapVisibilityChange,
     handleWorkspaceSpacesChange,

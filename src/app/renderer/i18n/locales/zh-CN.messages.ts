@@ -41,4 +41,11 @@ export const zhCNMessages = {
   canvasImageUnsupportedType: '不支持的图片格式，请使用 PNG、JPEG、WebP、GIF 或 AVIF。',
   canvasImageTooLarge: '图片太大（最大 {{maxMb}} MB）。',
   canvasImageImportFailed: '导入图片失败：{{message}}',
+  roleWorkflowRoleOnly: '请从角色输出连接到另一个角色输入。',
+  roleWorkflowSelfLink: '角色不能连接到自己。',
+  roleWorkflowDuplicate: '这两个角色已经连接。',
+  roleWorkflowSingleInput: '这个角色已经有一个输入连线。',
+  roleWorkflowCycle: '角色工作流不能形成循环。',
+  roleWorkflowOutputReadFailed: '读取角色输出失败：{{message}}',
+  roleWorkflowOutputEmpty: '角色输出为空，工作流已停止。',
 } as const

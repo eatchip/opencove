@@ -4,6 +4,7 @@ import type {
   Point,
   Size,
   SpaceArchiveRecord,
+  RoleWorkflowLink,
   TaskPriority,
   TaskRuntimeStatus,
   TerminalNodeData,
@@ -31,6 +32,8 @@ export interface WorkspaceCanvasProps {
   worktreesRoot: string
   nodes: Node<TerminalNodeData>[]
   onNodesChange: (nodes: Node<TerminalNodeData>[]) => void
+  roleWorkflowLinks?: RoleWorkflowLink[]
+  onRoleWorkflowLinksChange?: (links: RoleWorkflowLink[]) => void
   onRequestPersistFlush?: () => void
   spaces: WorkspaceSpaceState[]
   activeSpaceId: string | null

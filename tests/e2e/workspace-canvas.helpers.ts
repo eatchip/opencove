@@ -1,6 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import path from 'path'
 import type {
+  RoleNodeData,
+  RoleWorkflowLink,
   TaskAgentSessionRecord,
   WebsiteNodeData,
 } from '../../src/contexts/workspace/presentation/renderer/types'
@@ -69,6 +71,7 @@ export interface SeedTaskData {
 }
 
 export type SeedNoteData = { text: string }
+export type SeedRoleData = RoleNodeData
 export type SeedWebsiteData = WebsiteNodeData
 
 export interface SeedNode {
@@ -77,7 +80,7 @@ export interface SeedNode {
   position: { x: number; y: number }
   width: number
   height: number
-  kind?: 'terminal' | 'agent' | 'task' | 'note' | 'website'
+  kind?: 'terminal' | 'agent' | 'task' | 'note' | 'role' | 'website'
   status?: 'running' | 'standby' | 'exited' | 'failed' | 'stopped' | 'restoring' | null
   startedAt?: string | null
   endedAt?: string | null
@@ -88,7 +91,7 @@ export interface SeedNode {
   executionDirectory?: string | null
   expectedDirectory?: string | null
   agent?: SeedAgentData | null
-  task?: SeedTaskData | SeedNoteData | SeedWebsiteData | null
+  task?: SeedTaskData | SeedNoteData | SeedRoleData | SeedWebsiteData | null
 }
 
 export interface SeedWorkspace {
@@ -110,6 +113,7 @@ export interface SeedWorkspace {
     } | null
   }>
   activeSpaceId?: string | null
+  roleWorkflowLinks?: RoleWorkflowLink[]
 }
 
 function isRetryableNavigationError(error: unknown): boolean {
@@ -411,6 +415,7 @@ export async function clearAndSeedWorkspace(
     settings?: unknown
     spaces?: SeedWorkspace['spaces']
     activeSpaceId?: string | null
+    roleWorkflowLinks?: RoleWorkflowLink[]
   },
 ): Promise<void> {
   await seedWorkspaceState(window, {
@@ -421,6 +426,7 @@ export async function clearAndSeedWorkspace(
         name: path.basename(testWorkspacePath),
         path: testWorkspacePath,
         nodes,
+        ...(options?.roleWorkflowLinks ? { roleWorkflowLinks: options.roleWorkflowLinks } : {}),
         ...(options?.spaces ? { spaces: options.spaces } : {}),
         ...(options && 'activeSpaceId' in options ? { activeSpaceId: options.activeSpaceId } : {}),
       },

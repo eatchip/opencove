@@ -8,6 +8,7 @@ import {
   SelectionMode,
   useStore,
   useStoreApi,
+  type ConnectionMode,
   type Edge,
   type Node,
 } from '@xyflow/react'
@@ -49,7 +50,9 @@ export function WorkspaceCanvasView({
   nodes,
   edges,
   nodeTypes,
+  edgeTypes,
   onNodesChange,
+  onConnect,
   onPaneClick,
   onPaneContextMenu,
   onNodeClick,
@@ -273,7 +276,9 @@ export function WorkspaceCanvasView({
         nodes={filteredNodes}
         edges={filteredEdges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
+        onConnect={onConnect}
         onError={code => {
           // Suppress error015: "drag a node that is not initialized"
           // This fires harmlessly when a node is dragged before its dimensions
@@ -307,6 +312,7 @@ export function WorkspaceCanvasView({
           onMoveEnd(event, nextViewport)
         }}
         selectionMode={SelectionMode.Partial}
+        connectionMode={'loose' as ConnectionMode}
         deleteKeyCode={null}
         selectionKeyCode={null}
         multiSelectionKeyCode={null}

@@ -1,5 +1,13 @@
 import type * as React from 'react'
-import type { Edge, Node, NodeTypes, OnNodesChange, Viewport } from '@xyflow/react'
+import type {
+  Connection,
+  Edge,
+  EdgeTypes,
+  Node,
+  NodeTypes,
+  OnNodesChange,
+  Viewport,
+} from '@xyflow/react'
 import type { WorkspacePathOpener, WorkspacePathOpenerId } from '@shared/contracts/dto'
 import type { LabelColor, NodeLabelColorOverride } from '@shared/types/labelColor'
 import type {
@@ -54,7 +62,9 @@ export interface WorkspaceCanvasViewProps {
   nodes: Node<TerminalNodeData>[]
   edges: Edge[]
   nodeTypes: NodeTypes
+  edgeTypes?: EdgeTypes
   onNodesChange: OnNodesChange<Node<TerminalNodeData>>
+  onConnect?: (connection: Connection) => void
   onPaneClick: (event: React.MouseEvent | MouseEvent) => void
   onPaneContextMenu: (event: React.MouseEvent | MouseEvent) => void
   onNodeClick: (event: React.MouseEvent, node: Node<TerminalNodeData>) => void

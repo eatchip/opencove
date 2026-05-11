@@ -374,7 +374,7 @@ export function useWorkspaceCanvasNodesStore({
     setNodes,
     onRequestPersistFlush,
   })
-  const { updateRoleProvider, updateRoleInput, appendRoleRunRecord } =
+  const { updateRoleProvider, updateRoleInput, appendRoleRunRecord, updateRoleRunRecord } =
     useWorkspaceCanvasRoleNodeMutations({
       setNodes,
       onRequestPersistFlush,
@@ -471,6 +471,7 @@ export function useWorkspaceCanvasNodesStore({
     updateRoleProvider,
     updateRoleInput,
     appendRoleRunRecord,
+    updateRoleRunRecord,
     createImageNode,
     createDocumentNode,
     createWebsiteNode,

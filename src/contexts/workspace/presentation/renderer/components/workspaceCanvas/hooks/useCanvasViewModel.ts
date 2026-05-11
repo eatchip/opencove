@@ -7,8 +7,8 @@ import {
   resolveTaskTitleProvider,
   type AgentSettings,
 } from '@contexts/settings/domain/agentSettings'
-import type { TerminalNodeData, WorkspaceSpaceState } from '../../../types'
-import { useWorkspaceCanvasTaskAgentEdges } from './useTaskAgentEdges'
+import type { RoleWorkflowLink, TerminalNodeData, WorkspaceSpaceState } from '../../../types'
+import { useWorkspaceCanvasEdges } from './useTaskAgentEdges'
 import { useWorkspaceCanvasViewportMoveEnd } from './useViewportMoveEnd'
 import { useWorkspaceCanvasSpaceUi } from './useSpaceUi'
 import { resolveWorkspaceMinimapNodeColor } from '../minimap'
@@ -19,6 +19,8 @@ export function useWorkspaceCanvasViewModel({
   viewportRef,
   onViewportChange,
   flowNodes,
+  roleWorkflowLinks,
+  onDeleteRoleWorkflowLink,
   contextMenu,
   setContextMenu,
   setEmptySelectionPrompt,
@@ -34,6 +36,8 @@ export function useWorkspaceCanvasViewModel({
   viewportRef: MutableRefObject<Viewport>
   onViewportChange: (viewport: Viewport) => void
   flowNodes: Node<TerminalNodeData>[]
+  roleWorkflowLinks: RoleWorkflowLink[]
+  onDeleteRoleWorkflowLink: (linkId: string) => void
   contextMenu: ContextMenuState | null
   setContextMenu: React.Dispatch<React.SetStateAction<ContextMenuState | null>>
   setEmptySelectionPrompt: React.Dispatch<React.SetStateAction<EmptySelectionPromptState | null>>
@@ -52,7 +56,7 @@ export function useWorkspaceCanvasViewModel({
   taskTitleModelLabel: string
   handleViewportMoveEnd: (_event: MouseEvent | TouchEvent | null, nextViewport: Viewport) => void
   minimapNodeColor: typeof resolveWorkspaceMinimapNodeColor
-  taskAgentEdges: ReturnType<typeof useWorkspaceCanvasTaskAgentEdges>
+  workspaceEdges: ReturnType<typeof useWorkspaceCanvasEdges>
   spaceUi: ReturnType<typeof useWorkspaceCanvasSpaceUi>
 } {
   const { t } = useTranslation()
@@ -64,7 +68,11 @@ export function useWorkspaceCanvasViewModel({
   })
   const minimapNodeColor = resolveWorkspaceMinimapNodeColor
 
-  const taskAgentEdges = useWorkspaceCanvasTaskAgentEdges(flowNodes)
+  const workspaceEdges = useWorkspaceCanvasEdges({
+    nodes: flowNodes,
+    roleWorkflowLinks,
+    onDeleteRoleWorkflowLink,
+  })
 
   const spaceUi = useWorkspaceCanvasSpaceUi({
     contextMenu,
@@ -85,16 +93,16 @@ export function useWorkspaceCanvasViewModel({
       taskTitleModelLabel,
       handleViewportMoveEnd,
       minimapNodeColor,
-      taskAgentEdges,
+      workspaceEdges,
       spaceUi,
     }),
     [
       handleViewportMoveEnd,
       minimapNodeColor,
       spaceUi,
-      taskAgentEdges,
       taskTitleModelLabel,
       taskTitleProviderLabel,
+      workspaceEdges,
     ],
   )
 }

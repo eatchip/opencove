@@ -26,5 +26,6 @@ export const enRole = {
     noRuns: 'Not run yet',
     missingRoleDefinition: 'This role definition is missing.',
     edgeLabel: 'Role run: {{role}}',
+    deleteWorkflowLink: 'Delete role workflow link',
   },
 } as const

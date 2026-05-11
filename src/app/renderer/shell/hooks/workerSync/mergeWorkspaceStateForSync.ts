@@ -15,6 +15,31 @@ import {
   isWorkspaceSpaceRectEqual,
   shallowEqualRecord,
 } from './mergeWorkspaceStateForSync.equality'
+import { pruneRoleWorkflowLinksForNodes } from '@contexts/workspace/presentation/renderer/utils/roleWorkflow'
+
+function areRoleWorkflowLinksEquivalent(
+  left: WorkspaceState['roleWorkflowLinks'],
+  right: WorkspaceState['roleWorkflowLinks'],
+): boolean {
+  const leftLinks = left ?? []
+  const rightLinks = right ?? []
+  if (leftLinks.length !== rightLinks.length) {
+    return false
+  }
+
+  return leftLinks.every((leftLink, index) => {
+    const rightLink = rightLinks[index]
+    return (
+      rightLink !== undefined &&
+      leftLink.id === rightLink.id &&
+      leftLink.sourceRoleNodeId === rightLink.sourceRoleNodeId &&
+      leftLink.targetRoleNodeId === rightLink.targetRoleNodeId &&
+      leftLink.mode === rightLink.mode &&
+      leftLink.createdAt === rightLink.createdAt &&
+      leftLink.updatedAt === rightLink.updatedAt
+    )
+  })
+}
 
 function mergeRuntimeNode(
   persistedNode: Node<TerminalNodeData>,
@@ -230,6 +255,16 @@ export function toShellWorkspaceStateForSync(
       ? existingWorkspace.spaceArchiveRecords
       : nextSpaceArchiveRecords
 
+  const nextRoleWorkflowLinks = pruneRoleWorkflowLinksForNodes({
+    links: workspace.roleWorkflowLinks ?? [],
+    nodes: resolvedNodes,
+  })
+  const roleWorkflowLinks =
+    existingWorkspace &&
+    areRoleWorkflowLinksEquivalent(existingWorkspace.roleWorkflowLinks, nextRoleWorkflowLinks)
+      ? (existingWorkspace.roleWorkflowLinks ?? [])
+      : nextRoleWorkflowLinks
+
   const environmentVariables = (() => {
     const existing = existingWorkspace?.environmentVariables ?? undefined
     const next = workspace.environmentVariables ?? undefined
@@ -260,6 +295,7 @@ export function toShellWorkspaceStateForSync(
     isMinimapVisible: existingWorkspace?.isMinimapVisible ?? workspace.isMinimapVisible,
     spaces: sanitizedSpaces,
     activeSpaceId: resolvedActiveSpaceId,
+    roleWorkflowLinks,
     spaceArchiveRecords,
   }
 
@@ -278,6 +314,7 @@ export function toShellWorkspaceStateForSync(
     existingWorkspace.isMinimapVisible === nextWorkspace.isMinimapVisible &&
     existingWorkspace.spaces === nextWorkspace.spaces &&
     existingWorkspace.activeSpaceId === nextWorkspace.activeSpaceId &&
+    existingWorkspace.roleWorkflowLinks === nextWorkspace.roleWorkflowLinks &&
     existingWorkspace.spaceArchiveRecords === nextWorkspace.spaceArchiveRecords
   ) {
     return existingWorkspace

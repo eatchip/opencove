@@ -54,6 +54,11 @@ export interface RoleRunActionContext {
   t: TranslateFn
 }
 
+export interface RoleRunWorkflowOptions {
+  workflowRunId?: string | null
+  triggeredByRunId?: string | null
+}
+
 export function resolveNodeRoleDefinition(
   roleNode: Node<TerminalNodeData>,
   roles: ProjectRoleDefinition[],
@@ -137,6 +142,7 @@ export async function runRoleNodeAction(
   nodeId: string,
   inputOverride: string | undefined,
   context: RoleRunActionContext,
+  options: RoleRunWorkflowOptions = {},
 ): Promise<void> {
   const roleNode = context.nodesRef.current.find(node => node.id === nodeId)
   if (!roleNode || roleNode.data.kind !== 'role' || !roleNode.data.role) {
@@ -289,6 +295,13 @@ export async function runRoleNodeAction(
         provider,
         agentNodeId: createdAgentNode.id,
         sessionId: launchedSessionId,
+        status: 'running',
+        output: null,
+        outputCapturedAt: null,
+        completedAt: null,
+        workflowRunId: options.workflowRunId ?? crypto.randomUUID(),
+        triggeredByRunId: options.triggeredByRunId ?? null,
+        downstreamTriggeredAt: null,
         createdAt: now,
       },
     })

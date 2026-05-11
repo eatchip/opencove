@@ -74,6 +74,7 @@ export function toShellWorkspaceState(
     isMinimapVisible: workspace.isMinimapVisible,
     spaces: sanitizedSpaces,
     activeSpaceId: hasActiveSpace ? workspace.activeSpaceId : null,
+    roleWorkflowLinks: workspace.roleWorkflowLinks ?? [],
     spaceArchiveRecords: workspace.spaceArchiveRecords,
   }
 }

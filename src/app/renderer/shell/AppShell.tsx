@@ -137,7 +137,6 @@ export default function App(): React.JSX.Element {
   )
 
   const activeWorkspaceName = activeWorkspace?.name ?? null
-
   const isPrimarySidebarCollapsed = agentSettings.isPrimarySidebarCollapsed === true
 
   const [isFocusNodeTargetZoomPreviewing, setIsFocusNodeTargetZoomPreviewing] = useState(false)
@@ -274,6 +273,7 @@ export default function App(): React.JSX.Element {
 
   const {
     handleWorkspaceNodesChange,
+    handleWorkspaceRoleWorkflowLinksChange,
     handleWorkspaceViewportChange,
     handleWorkspaceMinimapVisibilityChange,
     handleWorkspaceSpacesChange,
@@ -378,6 +378,7 @@ export default function App(): React.JSX.Element {
             onRequestPersistFlush={requestPersistFlush}
             onAppendSpaceArchiveRecord={handleWorkspaceSpaceArchiveRecordAppend}
             onNodesChange={handleWorkspaceNodesChange}
+            onRoleWorkflowLinksChange={handleWorkspaceRoleWorkflowLinksChange}
             onViewportChange={handleWorkspaceViewportChange}
             onMinimapVisibilityChange={handleWorkspaceMinimapVisibilityChange}
             onSpacesChange={handleWorkspaceSpacesChange}

@@ -12,6 +12,7 @@ import {
   normalizeWorkspaceViewport,
 } from './normalize'
 import { normalizeLabelColor, normalizeNodeLabelColorOverride } from '@shared/types/labelColor'
+import { pruneRoleWorkflowLinksForNodes } from '../roleWorkflow'
 
 export function toPersistedState(
   workspaces: WorkspaceState[],
@@ -55,6 +56,10 @@ export function toPersistedState(
       spaceArchiveRecords: Array.isArray(workspace.spaceArchiveRecords)
         ? workspace.spaceArchiveRecords.slice(0, 50)
         : [],
+      roleWorkflowLinks: pruneRoleWorkflowLinksForNodes({
+        links: workspace.roleWorkflowLinks ?? [],
+        nodes: workspace.nodes,
+      }),
       nodes: workspace.nodes.map(node => {
         const sessionId = normalizeOptionalString(node.data.sessionId)
 

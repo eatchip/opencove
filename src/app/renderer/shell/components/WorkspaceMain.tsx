@@ -21,6 +21,7 @@ function WorkspaceMainComponent({
   onRequestPersistFlush,
   onAppendSpaceArchiveRecord,
   onNodesChange,
+  onRoleWorkflowLinksChange = () => undefined,
   onViewportChange,
   onMinimapVisibilityChange,
   onSpacesChange,
@@ -36,6 +37,7 @@ function WorkspaceMainComponent({
   onRequestPersistFlush: () => void
   onAppendSpaceArchiveRecord: (record: SpaceArchiveRecord) => void
   onNodesChange: (nodes: WorkspaceState['nodes']) => void
+  onRoleWorkflowLinksChange?: (links: NonNullable<WorkspaceState['roleWorkflowLinks']>) => void
   onViewportChange: (viewport: WorkspaceViewport) => void
   onMinimapVisibilityChange: (isVisible: boolean) => void
   onSpacesChange: (spaces: WorkspaceState['spaces']) => void
@@ -65,6 +67,8 @@ function WorkspaceMainComponent({
         worktreesRoot={activeWorkspace.worktreesRoot}
         nodes={activeWorkspace.nodes}
         onNodesChange={onNodesChange}
+        roleWorkflowLinks={activeWorkspace.roleWorkflowLinks ?? []}
+        onRoleWorkflowLinksChange={onRoleWorkflowLinksChange}
         onRequestPersistFlush={onRequestPersistFlush}
         onAppendSpaceArchiveRecord={onAppendSpaceArchiveRecord}
         viewport={activeWorkspace.viewport}

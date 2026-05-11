@@ -1,7 +1,11 @@
 import { useMemo } from 'react'
 import { MarkerType, type Edge, type Node } from '@xyflow/react'
 import { useTranslation } from '@app/renderer/i18n'
-import type { TerminalNodeData } from '../../../types'
+import type { RoleWorkflowLink, TerminalNodeData } from '../../../types'
+import {
+  ROLE_WORKFLOW_INPUT_HANDLE_ID,
+  ROLE_WORKFLOW_OUTPUT_HANDLE_ID,
+} from '../../../utils/roleWorkflow'
 import { isAgentWorking } from '../helpers'
 
 export function resolveWorkspaceCanvasAgentEdges({
@@ -110,13 +114,79 @@ export function resolveWorkspaceCanvasAgentEdges({
   return [...taskEdges, ...roleEdges]
 }
 
-export function useWorkspaceCanvasTaskAgentEdges(nodes: Node<TerminalNodeData>[]): Edge[] {
+export function resolveWorkspaceCanvasRoleWorkflowEdges({
+  nodes,
+  roleWorkflowLinks,
+  onDeleteRoleWorkflowLink,
+  deleteLabel,
+}: {
+  nodes: Node<TerminalNodeData>[]
+  roleWorkflowLinks: RoleWorkflowLink[]
+  onDeleteRoleWorkflowLink: (linkId: string) => void
+  deleteLabel: string
+}): Edge[] {
+  const nodeById = new Map(nodes.map(node => [node.id, node]))
+
+  return roleWorkflowLinks.flatMap(link => {
+    const sourceNode = nodeById.get(link.sourceRoleNodeId)
+    const targetNode = nodeById.get(link.targetRoleNodeId)
+    if (
+      !sourceNode ||
+      !targetNode ||
+      sourceNode.data.kind !== 'role' ||
+      targetNode.data.kind !== 'role'
+    ) {
+      return []
+    }
+
+    return [
+      {
+        id: link.id,
+        source: link.sourceRoleNodeId,
+        target: link.targetRoleNodeId,
+        sourceHandle: ROLE_WORKFLOW_OUTPUT_HANDLE_ID,
+        targetHandle: ROLE_WORKFLOW_INPUT_HANDLE_ID,
+        type: 'roleWorkflow',
+        className: 'workspace-role-workflow-edge',
+        selectable: false,
+        focusable: false,
+        data: {
+          onDelete: onDeleteRoleWorkflowLink,
+          deleteLabel,
+        },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: 'rgba(218, 164, 84, 0.9)',
+          width: 22,
+          height: 22,
+        },
+      },
+    ]
+  })
+}
+
+export function useWorkspaceCanvasEdges({
+  nodes,
+  roleWorkflowLinks,
+  onDeleteRoleWorkflowLink,
+}: {
+  nodes: Node<TerminalNodeData>[]
+  roleWorkflowLinks: RoleWorkflowLink[]
+  onDeleteRoleWorkflowLink: (linkId: string) => void
+}): Edge[] {
   const { t } = useTranslation()
 
   return useMemo(() => {
-    return resolveWorkspaceCanvasAgentEdges({
+    const agentEdges = resolveWorkspaceCanvasAgentEdges({
       nodes,
       formatRoleEdgeLabel: roleName => t('roleNode.edgeLabel', { role: roleName }),
     })
-  }, [nodes, t])
+    const roleWorkflowEdges = resolveWorkspaceCanvasRoleWorkflowEdges({
+      nodes,
+      roleWorkflowLinks,
+      onDeleteRoleWorkflowLink,
+      deleteLabel: t('roleNode.deleteWorkflowLink'),
+    })
+    return [...roleWorkflowEdges, ...agentEdges]
+  }, [nodes, onDeleteRoleWorkflowLink, roleWorkflowLinks, t])
 }

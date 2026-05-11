@@ -274,7 +274,7 @@
   line-height: 1;
   padding: 0;
   cursor: pointer;
-  opacity: 0;
+  opacity: 0.58;
   visibility: hidden;
   pointer-events: none;
   transform: translateY(2px);
@@ -361,6 +361,54 @@
 
 .workspace-canvas .workspace-role-agent-edge .react-flow__arrowhead {
   filter: drop-shadow(0 0 6px rgba(84, 180, 145, 0.38));
+}
+
+.workspace-canvas .workspace-role-workflow-edge .react-flow__edge-path {
+  stroke: rgba(218, 164, 84, 0.82);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 8px rgba(218, 164, 84, 0.32));
+}
+
+.workspace-canvas .workspace-role-workflow-edge .react-flow__arrowhead {
+  filter: drop-shadow(0 0 6px rgba(218, 164, 84, 0.32));
+}
+
+.workspace-role-workflow-edge__delete {
+  position: absolute;
+  z-index: 12;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(218, 164, 84, 0.55);
+  border-radius: 999px;
+  background: var(--cove-window-surface);
+  color: var(--cove-text-muted);
+  opacity: 0.64;
+  pointer-events: all;
+  cursor: pointer;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease,
+    color 120ms ease,
+    background 120ms ease;
+}
+
+.workspace-role-workflow-edge__delete svg {
+  width: 12px;
+  height: 12px;
+}
+
+.workspace-canvas .react-flow__edge:hover .workspace-role-workflow-edge__delete,
+.workspace-role-workflow-edge__delete:focus-visible {
+  opacity: 1;
+}
+
+.workspace-role-workflow-edge__delete:hover {
+  transform: scale(1.08);
+  background: color-mix(in srgb, var(--cove-window-surface) 84%, rgba(218, 164, 84, 0.5));
+  color: var(--cove-text);
 }
 
 @keyframes workspace-task-cable-flow {

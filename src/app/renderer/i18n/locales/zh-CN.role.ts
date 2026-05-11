@@ -26,5 +26,6 @@ export const zhCNRole = {
     noRuns: '尚未运行',
     missingRoleDefinition: '这个角色定义已缺失。',
     edgeLabel: '角色运行：{{role}}',
+    deleteWorkflowLink: '删除角色工作流连线',
   },
 } as const
