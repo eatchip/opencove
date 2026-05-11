@@ -4,6 +4,7 @@ import type { AgentProvider } from '@contexts/settings/domain/agentSettings'
 import type { NodeFrame, TaskRuntimeStatus, TerminalNodeData } from '../../../types'
 import { focusNodeInViewport } from '../helpers'
 import type { AgentSessionSummary, WebsiteWindowSessionMode } from '@shared/contracts/dto'
+import type { RoleRunWorkflowOptions } from './useRoleActions.run'
 
 export interface WorkspaceCanvasActionRefs {
   clearNodeSelectionRef: React.MutableRefObject<() => void>
@@ -22,7 +23,9 @@ export interface WorkspaceCanvasActionRefs {
   updateWebsiteUrlRef: React.MutableRefObject<(nodeId: string, url: string) => void>
   updateRoleInputRef: React.MutableRefObject<(nodeId: string, input: string) => void>
   updateRoleProviderRef: React.MutableRefObject<(nodeId: string, provider: AgentProvider) => void>
-  runRoleRef: React.MutableRefObject<(nodeId: string, inputOverride?: string) => Promise<void>>
+  runRoleRef: React.MutableRefObject<
+    (nodeId: string, inputOverride?: string, options?: RoleRunWorkflowOptions) => Promise<void>
+  >
   setWebsitePinnedRef: React.MutableRefObject<(nodeId: string, pinned: boolean) => void>
   setWebsiteSessionRef: React.MutableRefObject<
     (nodeId: string, sessionMode: WebsiteWindowSessionMode, profileId: string | null) => void
@@ -82,8 +85,11 @@ export function useWorkspaceCanvasActionRefs(): WorkspaceCanvasActionRefs {
   const updateRoleProviderRef = useRef<(nodeId: string, provider: AgentProvider) => void>(
     (_nodeId: string, _provider: AgentProvider) => undefined,
   )
-  const runRoleRef = useRef<(nodeId: string, inputOverride?: string) => Promise<void>>(
-    async (_nodeId: string, _inputOverride?: string) => undefined,
+  const runRoleRef = useRef<
+    (nodeId: string, inputOverride?: string, options?: RoleRunWorkflowOptions) => Promise<void>
+  >(
+    async (_nodeId: string, _inputOverride?: string, _options?: RoleRunWorkflowOptions) =>
+      undefined,
   )
   const setWebsitePinnedRef = useRef<(nodeId: string, pinned: boolean) => void>(
     (_nodeId: string, _pinned: boolean) => undefined,

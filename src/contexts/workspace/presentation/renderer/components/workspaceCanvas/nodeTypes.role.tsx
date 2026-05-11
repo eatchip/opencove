@@ -3,6 +3,7 @@ import type { AgentProvider } from '@contexts/settings/domain/agentSettings'
 import { RoleNode } from '../RoleNode'
 import type { NodeFrame, TerminalNodeData } from '../../types'
 import { useNodePosition } from './nodePosition'
+import type { RoleRunWorkflowOptions } from './hooks/useRoleActions.run'
 
 export function WorkspaceCanvasRoleNodeType({
   data,
@@ -24,7 +25,9 @@ export function WorkspaceCanvasRoleNodeType({
   resizeNodeRef: MutableRefObject<(nodeId: string, desiredFrame: NodeFrame) => void>
   updateRoleProviderRef: MutableRefObject<(nodeId: string, provider: AgentProvider) => void>
   updateRoleInputRef: MutableRefObject<(nodeId: string, input: string) => void>
-  runRoleRef: MutableRefObject<(nodeId: string, inputOverride?: string) => Promise<void>>
+  runRoleRef: MutableRefObject<
+    (nodeId: string, inputOverride?: string, options?: RoleRunWorkflowOptions) => Promise<void>
+  >
   normalizeViewportForTerminalInteractionRef: MutableRefObject<(nodeId: string) => void>
   agentProviderOrder: AgentProvider[]
   defaultProvider: AgentProvider

@@ -1,9 +1,11 @@
 import { useWorkspaceCanvasAgentLastMessageCopy } from './useAgentLastMessageToNote'
 import { useWorkspaceCanvasSyncActionRefs, type WorkspaceCanvasActionRefs } from './useActionRefs'
 import { useWorkspaceCanvasPtyTaskCompletion } from './usePtyTaskCompletion'
+import { useWorkspaceCanvasRoleWorkflowRuntime } from './useRoleWorkflowRuntime'
 
 export function useWorkspaceCanvasRuntimeBindings({
   setNodes,
+  roleWorkflowLinks,
   onRequestPersistFlush,
   actionRefs,
   clearNodeSelection,
@@ -22,10 +24,14 @@ export function useWorkspaceCanvasRuntimeBindings({
   focusNodeOnClick,
   focusNodeTargetZoom,
   nodesRef,
+  updateRoleRunRecord,
   reactFlow,
   onShowMessage,
 }: {
   setNodes: Parameters<typeof useWorkspaceCanvasPtyTaskCompletion>[0]['setNodes']
+  roleWorkflowLinks: Parameters<
+    typeof useWorkspaceCanvasRoleWorkflowRuntime
+  >[0]['roleWorkflowLinks']
   onRequestPersistFlush?: Parameters<
     typeof useWorkspaceCanvasPtyTaskCompletion
   >[0]['onRequestPersistFlush']
@@ -51,10 +57,21 @@ export function useWorkspaceCanvasRuntimeBindings({
   focusNodeOnClick: Parameters<typeof useWorkspaceCanvasSyncActionRefs>[0]['focusNodeOnClick']
   focusNodeTargetZoom: Parameters<typeof useWorkspaceCanvasSyncActionRefs>[0]['focusNodeTargetZoom']
   nodesRef: Parameters<typeof useWorkspaceCanvasAgentLastMessageCopy>[0]['nodesRef']
+  updateRoleRunRecord: Parameters<
+    typeof useWorkspaceCanvasRoleWorkflowRuntime
+  >[0]['updateRoleRunRecord']
   reactFlow: Parameters<typeof useWorkspaceCanvasSyncActionRefs>[0]['reactFlow']
   onShowMessage?: Parameters<typeof useWorkspaceCanvasAgentLastMessageCopy>[0]['onShowMessage']
 }): void {
   useWorkspaceCanvasPtyTaskCompletion({ setNodes, onRequestPersistFlush })
+
+  useWorkspaceCanvasRoleWorkflowRuntime({
+    roleWorkflowLinks,
+    nodesRef,
+    actionRefs,
+    updateRoleRunRecord,
+    onShowMessage,
+  })
 
   const copyAgentLastMessage = useWorkspaceCanvasAgentLastMessageCopy({
     nodesRef,

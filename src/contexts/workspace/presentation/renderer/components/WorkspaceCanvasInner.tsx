@@ -12,6 +12,8 @@ export function WorkspaceCanvasInner({
   worktreesRoot,
   nodes,
   onNodesChange,
+  roleWorkflowLinks = [],
+  onRoleWorkflowLinksChange = () => undefined,
   onRequestPersistFlush,
   spaces,
   activeSpaceId,
@@ -186,6 +188,8 @@ export function WorkspaceCanvasInner({
   // prettier-ignore
   const roleUiProps = workspaceCanvasHooks.useWorkspaceCanvasRoleUi({ workspaceId, workspacePath, environmentVariables, agentSettings, canvasState, nodeStore, agentSupport, onSpacesChange, onRequestPersistFlush, onShowMessage, actionRefs })
   // prettier-ignore
+  const roleWorkflow = workspaceCanvasHooks.useWorkspaceCanvasRoleWorkflow({ roleWorkflowLinks, onRoleWorkflowLinksChange, nodesRef: nodeStore.nodesRef, onShowMessage })
+  // prettier-ignore
   const inputMode = workspaceCanvasHooks.useWorkspaceCanvasInputMode({ canvasInputModeSetting: agentSettings.canvasInputMode, canvasWheelBehaviorSetting: agentSettings.canvasWheelBehavior, canvasWheelZoomModifierSetting: agentSettings.canvasWheelZoomModifier, detectedCanvasInputMode: canvasState.detectedCanvasInputMode, inputModalityStateRef: canvasState.inputModalityStateRef, setDetectedCanvasInputMode: canvasState.setDetectedCanvasInputMode, canvasRef: canvasState.canvasRef, trackpadGestureLockRef: canvasState.trackpadGestureLockRef, setIsCanvasWheelGestureCaptureActive: canvasState.setIsCanvasWheelGestureCaptureActive, viewportRef: canvasState.viewportRef, reactFlow, onViewportChange })
   // prettier-ignore
   workspaceCanvasHooks.useWorkspaceCanvasLifecycleBindings({ workspaceId, persistedMinimapVisible, canvasState, cancelSpaceRename: spacesApi.cancelSpaceRename, reactFlow, viewport, agentSettings, focusSpaceId, focusNodeId, focusSequence, spaces, focusSpaceInViewport: spacesApi.focusSpaceInViewport, nodes: canvasState.flowNodes, isFocusNodeTargetZoomPreviewing, nodesRef: nodeStore.nodesRef, requestNodeDeleteRef: actionRefs.requestNodeDeleteRef })
@@ -309,6 +313,7 @@ export function WorkspaceCanvasInner({
   })
   workspaceCanvasHooks.useWorkspaceCanvasRuntimeBindings({
     setNodes: nodeStore.setNodes,
+    roleWorkflowLinks,
     onRequestPersistFlush,
     actionRefs,
     clearNodeSelection,
@@ -327,6 +332,7 @@ export function WorkspaceCanvasInner({
     focusNodeOnClick: agentSettings.focusNodeOnClick,
     focusNodeTargetZoom: agentSettings.focusNodeTargetZoom,
     nodesRef: nodeStore.nodesRef,
+    updateRoleRunRecord: nodeStore.updateRoleRunRecord,
     reactFlow,
     onShowMessage,
   })
@@ -346,13 +352,14 @@ export function WorkspaceCanvasInner({
     taskTitleModelLabel,
     handleViewportMoveEnd,
     minimapNodeColor,
-    taskAgentEdges,
+    workspaceEdges,
     spaceUi,
   } = workspaceCanvasHooks.useWorkspaceCanvasViewModel({
     agentSettings,
     viewportRef: canvasState.viewportRef,
     onViewportChange,
     flowNodes: canvasState.flowNodes,
+    ...roleWorkflow.viewModelProps,
     contextMenu: canvasState.contextMenu,
     setContextMenu: canvasState.setContextMenu,
     setEmptySelectionPrompt: canvasState.setEmptySelectionPrompt,
@@ -395,8 +402,9 @@ export function WorkspaceCanvasInner({
       handleCanvasDragOver={handleCanvasDragOver}
       handleCanvasDrop={handleCanvasDrop}
       nodes={canvasState.flowNodes}
-      edges={taskAgentEdges}
+      edges={workspaceEdges}
       nodeTypes={nodeTypes}
+      {...roleWorkflow.viewProps}
       onNodesChange={applyChanges}
       onNodeClick={handleNodeClick}
       onSelectionChange={handleSelectionChange}

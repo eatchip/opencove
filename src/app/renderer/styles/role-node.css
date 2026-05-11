@@ -11,6 +11,35 @@
   box-shadow: 0 18px 40px var(--cove-shadow-color-elevated);
 }
 
+.role-node .role-node__connection {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--cove-window-surface);
+  background: color-mix(in srgb, var(--cove-accent) 76%, #d5a55c);
+  opacity: 0.92;
+  pointer-events: auto;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.role-node .role-node__connection:hover,
+.role-node .role-node__connection.connectingfrom,
+.role-node .role-node__connection.connectingto {
+  opacity: 1;
+  transform: scale(1.16);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--cove-accent) 22%, transparent);
+}
+
+.role-node .role-node__connection--input {
+  left: -7px;
+}
+
+.role-node .role-node__connection--output {
+  right: -7px;
+}
+
 .role-node__header {
   display: flex;
   align-items: center;

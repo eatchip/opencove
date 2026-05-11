@@ -1,6 +1,9 @@
 import type { Node } from '@xyflow/react'
 import { describe, expect, it } from 'vitest'
-import { resolveWorkspaceCanvasAgentEdges } from '../../../src/contexts/workspace/presentation/renderer/components/workspaceCanvas/hooks/useTaskAgentEdges'
+import {
+  resolveWorkspaceCanvasAgentEdges,
+  resolveWorkspaceCanvasRoleWorkflowEdges,
+} from '../../../src/contexts/workspace/presentation/renderer/components/workspaceCanvas/hooks/useTaskAgentEdges'
 import type { TerminalNodeData } from '../../../src/contexts/workspace/presentation/renderer/types'
 
 function createNode(id: string, data: TerminalNodeData): Node<TerminalNodeData> {
@@ -77,6 +80,60 @@ describe('resolveWorkspaceCanvasAgentEdges', () => {
       target: 'agent-1',
       className: 'workspace-role-agent-edge workspace-role-agent-edge--active',
       label: 'Role run: Product Manager',
+    })
+  })
+})
+
+describe('resolveWorkspaceCanvasRoleWorkflowEdges', () => {
+  it('creates role workflow edges with role handles', () => {
+    const roleA = createBaseData('role')
+    roleA.role = {
+      roleId: 'role-a',
+      roleName: 'Role A',
+      roleDescription: '',
+      promptTemplate: 'A',
+      inputHint: '',
+      outputFormat: '',
+      input: '',
+      selectedProvider: 'codex',
+      linkedAgentNodeId: null,
+      runHistory: [],
+      createdAt: '2026-05-10T00:00:00.000Z',
+      updatedAt: '2026-05-10T00:00:00.000Z',
+    }
+
+    const roleB = createBaseData('role')
+    roleB.role = {
+      ...roleA.role,
+      roleId: 'role-b',
+      roleName: 'Role B',
+    }
+
+    const edges = resolveWorkspaceCanvasRoleWorkflowEdges({
+      nodes: [createNode('role-a-node', roleA), createNode('role-b-node', roleB)],
+      roleWorkflowLinks: [
+        {
+          id: 'role-workflow-role-a-node-role-b-node',
+          sourceRoleNodeId: 'role-a-node',
+          targetRoleNodeId: 'role-b-node',
+          mode: 'auto',
+          createdAt: '2026-05-10T00:00:00.000Z',
+          updatedAt: '2026-05-10T00:00:00.000Z',
+        },
+      ],
+      onDeleteRoleWorkflowLink: () => undefined,
+      deleteLabel: 'Delete',
+    })
+
+    expect(edges).toHaveLength(1)
+    expect(edges[0]).toMatchObject({
+      id: 'role-workflow-role-a-node-role-b-node',
+      source: 'role-a-node',
+      target: 'role-b-node',
+      sourceHandle: 'role-output',
+      targetHandle: 'role-input',
+      type: 'roleWorkflow',
+      className: 'workspace-role-workflow-edge',
     })
   })
 })

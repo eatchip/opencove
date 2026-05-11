@@ -18,6 +18,7 @@ import type {
   UpdateTaskStatus,
 } from './types'
 import type { WorkspaceCanvasNodeTypeProps } from './nodeTypes.types'
+import type { RoleRunWorkflowOptions } from './hooks/useRoleActions.run'
 
 interface WorkspaceCanvasNodeTypesParams {
   spacesRef: MutableRefObject<WorkspaceSpaceState[]>
@@ -46,7 +47,9 @@ interface WorkspaceCanvasNodeTypesParams {
   renameNoteTitleRef: MutableRefObject<(nodeId: string, title: string) => void>
   updateRoleProviderRef: MutableRefObject<(nodeId: string, provider: AgentProvider) => void>
   updateRoleInputRef: MutableRefObject<(nodeId: string, input: string) => void>
-  runRoleRef: MutableRefObject<(nodeId: string, inputOverride?: string) => Promise<void>>
+  runRoleRef: MutableRefObject<
+    (nodeId: string, inputOverride?: string, options?: RoleRunWorkflowOptions) => Promise<void>
+  >
   updateNodeScrollbackRef: MutableRefObject<UpdateNodeScrollback>
   normalizeViewportForTerminalInteractionRef: MutableRefObject<(nodeId: string) => void>
   requestNodeDeleteRef: MutableRefObject<(nodeIds: string[]) => void>

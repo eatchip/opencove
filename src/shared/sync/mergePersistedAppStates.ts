@@ -401,6 +401,9 @@ function mergeWorkspaces(
     ...base,
     ...local,
     nodes,
+    roleWorkflowLinks: (local.roleWorkflowLinks ?? base.roleWorkflowLinks ?? []).filter(
+      link => validNodeIds.has(link.sourceRoleNodeId) && validNodeIds.has(link.targetRoleNodeId),
+    ),
     spaces: mergeSpaces({
       baseSpaces: base.spaces,
       localSpaces: local.spaces,

@@ -151,6 +151,7 @@ export function useAddProjectWizardCreateProject(options: {
         isMinimapVisible: DEFAULT_WORKSPACE_MINIMAP_VISIBLE,
         spaces: [],
         activeSpaceId: null,
+        roleWorkflowLinks: [],
         spaceArchiveRecords: [],
       }
 

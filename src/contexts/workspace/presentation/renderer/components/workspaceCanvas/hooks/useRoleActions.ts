@@ -31,7 +31,7 @@ import type {
 } from '../types'
 import { resolveDefaultRoleWindowSize } from '../constants'
 import type { WorkspaceCanvasActionRefs } from './useActionRefs'
-import { runRoleNodeAction } from './useRoleActions.run'
+import { runRoleNodeAction, type RoleRunWorkflowOptions } from './useRoleActions.run'
 
 type SetNodes = (
   updater: (prevNodes: Node<TerminalNodeData>[]) => Node<TerminalNodeData>[],
@@ -282,25 +282,34 @@ export function useWorkspaceCanvasRoleActions({
   ])
 
   const runRoleNode = useCallback(
-    async (nodeId: string, inputOverride?: string): Promise<void> => {
-      await runRoleNodeAction(nodeId, inputOverride, {
-        workspaceId,
-        workspacePath,
-        environmentVariables,
-        agentSettings,
-        projectRoles,
-        nodesRef,
-        spacesRef,
-        setNodes,
-        onSpacesChange,
-        onRequestPersistFlush,
-        onShowMessage,
-        createNodeForSession,
-        updateRoleInput,
-        appendRoleRunRecord,
-        buildAgentNodeTitle,
-        t,
-      })
+    async (
+      nodeId: string,
+      inputOverride?: string,
+      options?: RoleRunWorkflowOptions,
+    ): Promise<void> => {
+      await runRoleNodeAction(
+        nodeId,
+        inputOverride,
+        {
+          workspaceId,
+          workspacePath,
+          environmentVariables,
+          agentSettings,
+          projectRoles,
+          nodesRef,
+          spacesRef,
+          setNodes,
+          onSpacesChange,
+          onRequestPersistFlush,
+          onShowMessage,
+          createNodeForSession,
+          updateRoleInput,
+          appendRoleRunRecord,
+          buildAgentNodeTitle,
+          t,
+        },
+        options,
+      )
     },
     [
       agentSettings,

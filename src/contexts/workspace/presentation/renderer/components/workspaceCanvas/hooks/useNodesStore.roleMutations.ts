@@ -23,6 +23,11 @@ export function useWorkspaceCanvasRoleNodeMutations({
       record: RoleNodeData['runHistory'][number]
     },
   ) => void
+  updateRoleRunRecord: (
+    nodeId: string,
+    runId: string,
+    update: (record: RoleNodeData['runHistory'][number]) => RoleNodeData['runHistory'][number],
+  ) => void
 } {
   const updateRoleProvider = useCallback(
     (nodeId: string, provider: AgentProvider) => {
@@ -143,9 +148,66 @@ export function useWorkspaceCanvasRoleNodeMutations({
     [onRequestPersistFlush, setNodes],
   )
 
+  const updateRoleRunRecord = useCallback(
+    (
+      nodeId: string,
+      runId: string,
+      update: (record: RoleNodeData['runHistory'][number]) => RoleNodeData['runHistory'][number],
+    ) => {
+      setNodes(
+        prevNodes => {
+          let hasChanged = false
+          const updatedAt = new Date().toISOString()
+          const nextNodes = prevNodes.map(node => {
+            if (node.id !== nodeId || node.data.kind !== 'role' || !node.data.role) {
+              return node
+            }
+
+            const nextRunHistory = node.data.role.runHistory.map(record => {
+              if (record.id !== runId) {
+                return record
+              }
+
+              const nextRecord = update(record)
+              if (nextRecord === record) {
+                return record
+              }
+
+              hasChanged = true
+              return nextRecord
+            })
+
+            if (!hasChanged) {
+              return node
+            }
+
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                role: {
+                  ...node.data.role,
+                  runHistory: nextRunHistory,
+                  updatedAt,
+                },
+              },
+            }
+          })
+
+          return hasChanged ? nextNodes : prevNodes
+        },
+        { syncLayout: false },
+      )
+
+      onRequestPersistFlush?.()
+    },
+    [onRequestPersistFlush, setNodes],
+  )
+
   return {
     updateRoleProvider,
     updateRoleInput,
     appendRoleRunRecord,
+    updateRoleRunRecord,
   }
 }

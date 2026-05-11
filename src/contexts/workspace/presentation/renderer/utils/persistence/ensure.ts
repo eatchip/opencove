@@ -21,6 +21,7 @@ import { normalizeLabelColor, normalizeNodeLabelColorOverride } from '@shared/ty
 import { normalizeResumeSessionBinding } from './ensureResumeSessionBinding'
 import { ensurePersistedRoleData } from './ensureRoleNodeData'
 import { ensurePersistedSpaceArchiveRecord } from './ensureSpaceArchiveRecord'
+import { sanitizeRoleWorkflowLinks } from '../roleWorkflow'
 import {
   normalizeAgentRuntimeStatus,
   normalizeDirectoryMode,
@@ -394,6 +395,7 @@ export function ensurePersistedWorkspace(workspace: unknown): PersistedWorkspace
   const nodes = record.nodes
   const spaces = record.spaces
   const activeSpaceId = record.activeSpaceId
+  const roleWorkflowLinks = record.roleWorkflowLinks
   const spaceArchiveRecords = record.spaceArchiveRecords
 
   if (typeof id !== 'string' || typeof name !== 'string' || typeof path !== 'string') {
@@ -407,6 +409,10 @@ export function ensurePersistedWorkspace(workspace: unknown): PersistedWorkspace
   const normalizedNodes = nodes
     .map(node => ensurePersistedNode(node))
     .filter((node): node is PersistedTerminalNode => node !== null)
+  const normalizedRoleWorkflowLinks = sanitizeRoleWorkflowLinks({
+    value: roleWorkflowLinks,
+    nodes: normalizedNodes,
+  })
 
   const normalizedSpaces = Array.isArray(spaces)
     ? spaces
@@ -444,6 +450,7 @@ export function ensurePersistedWorkspace(workspace: unknown): PersistedWorkspace
     isMinimapVisible: normalizeWorkspaceMinimapVisible(record.isMinimapVisible),
     spaces: sanitizedSpaces,
     activeSpaceId: resolvedActiveSpaceId,
+    roleWorkflowLinks: normalizedRoleWorkflowLinks,
     spaceArchiveRecords: normalizedSpaceArchiveRecords,
   }
 }

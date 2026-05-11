@@ -105,6 +105,11 @@ export interface UseWorkspaceCanvasNodesStoreResult {
       record: RoleNodeData['runHistory'][number]
     },
   ) => void
+  updateRoleRunRecord: (
+    nodeId: string,
+    runId: string,
+    update: (record: RoleNodeData['runHistory'][number]) => RoleNodeData['runHistory'][number],
+  ) => void
   createImageNode: (
     anchor: Point,
     image: ImageNodeData,
