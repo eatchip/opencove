@@ -95,6 +95,16 @@ export function resolveRoleWorkflowConnection(
   const targetNodeId = connection.target?.trim() ?? null
 
   if (
+    connection.sourceHandle === ROLE_WORKFLOW_OUTPUT_HANDLE_ID &&
+    connection.targetHandle === ROLE_WORKFLOW_INPUT_HANDLE_ID
+  ) {
+    return {
+      sourceRoleNodeId: sourceNodeId,
+      targetRoleNodeId: targetNodeId,
+    }
+  }
+
+  if (
     connection.sourceHandle === ROLE_WORKFLOW_INPUT_HANDLE_ID &&
     connection.targetHandle === ROLE_WORKFLOW_OUTPUT_HANDLE_ID
   ) {
@@ -105,8 +115,8 @@ export function resolveRoleWorkflowConnection(
   }
 
   return {
-    sourceRoleNodeId: sourceNodeId,
-    targetRoleNodeId: targetNodeId,
+    sourceRoleNodeId: null,
+    targetRoleNodeId: null,
   }
 }
 

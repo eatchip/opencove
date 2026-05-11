@@ -53,6 +53,36 @@ describe('role workflow links', () => {
     })
   })
 
+  it('rejects loose same-type handle drags before validation can infer a direction', () => {
+    const nodes = [roleNode('role-a'), roleNode('role-b')]
+
+    for (const connection of [
+      {
+        source: 'role-a',
+        sourceHandle: ROLE_WORKFLOW_OUTPUT_HANDLE_ID,
+        target: 'role-b',
+        targetHandle: ROLE_WORKFLOW_OUTPUT_HANDLE_ID,
+      },
+      {
+        source: 'role-a',
+        sourceHandle: ROLE_WORKFLOW_INPUT_HANDLE_ID,
+        target: 'role-b',
+        targetHandle: ROLE_WORKFLOW_INPUT_HANDLE_ID,
+      },
+    ]) {
+      const resolvedConnection = resolveRoleWorkflowConnection(connection)
+
+      expect(
+        validateRoleWorkflowConnection({
+          sourceRoleNodeId: resolvedConnection.sourceRoleNodeId,
+          targetRoleNodeId: resolvedConnection.targetRoleNodeId,
+          nodes,
+          links: [],
+        }),
+      ).toEqual({ ok: false, reason: 'missing-endpoint' })
+    }
+  })
+
   it('rejects non-role endpoints and self links', () => {
     expect(
       validateRoleWorkflowConnection({
